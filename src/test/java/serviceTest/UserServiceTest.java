@@ -1,9 +1,9 @@
 package serviceTest;
 
-import com.example.FeedbackSystem.DTO.EntityDTO.responseDTOs.UserResponseDTO;
-import com.example.FeedbackSystem.model.User;
-import com.example.FeedbackSystem.repository.UserRepository;
-import com.example.FeedbackSystem.service.UserService;
+import com.feedbacks.FeedbackSystem.DTO.EntityDTO.responseDTOs.UserResponseDTO;
+import com.feedbacks.FeedbackSystem.model.User;
+import com.feedbacks.FeedbackSystem.repository.UserRepository;
+import com.feedbacks.FeedbackSystem.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
