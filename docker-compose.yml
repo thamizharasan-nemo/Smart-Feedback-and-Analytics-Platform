@@ -15,6 +15,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       SPRING_PROFILES_ACTIVE: prod
+#      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
     depends_on:
       db:
@@ -24,6 +25,7 @@ services:
 
   db:
     image: mysql:8
+    container_name: db
     environment:
       MYSQL_DATABASE: feedback_db
       MYSQL_USER: feedback_user
