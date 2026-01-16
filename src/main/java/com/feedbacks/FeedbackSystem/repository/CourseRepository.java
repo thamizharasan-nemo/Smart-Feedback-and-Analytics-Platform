@@ -1,6 +1,7 @@
 package com.feedbacks.FeedbackSystem.repository;
 
 import com.feedbacks.FeedbackSystem.DTO.analytics.CourseFeedbackCountDTO;
+import com.feedbacks.FeedbackSystem.DTO.analytics.CourseRankingDTO;
 import com.feedbacks.FeedbackSystem.DTO.analytics.PopularCourseDTO;
 import com.feedbacks.FeedbackSystem.model.Course;
 import org.springframework.data.domain.Pageable;
@@ -31,16 +32,16 @@ public interface CourseRepository extends JpaRepository<Course, Integer>,
     List<CourseFeedbackCountDTO> countFeedbacksAndAvgRatePerCourse();
 
     // USE NATIVE QUERIES TO IGNORE THE FILTER CLAUSE IN COURSE ENTITY
-    @Query(value = "SELECT * FROM course c " +
+    @Query(value = "SELECT * FROM Course c " +
             "WHERE c.course_id = :courseId AND c.is_deleted = true", nativeQuery = true)
-    Optional<Course> restoreCourseById(@Param("courseId")int courseId);
+    Optional<Course> restoreCourseById(@Param("courseId")Integer courseId);
 
-    @Query(value = "SELECT * FROM course c WHERE c.is_deleted = true", nativeQuery = true)
+    @Query(value = "SELECT * FROM Course c WHERE c.is_deleted = true", nativeQuery = true)
     List<Course> findAllDeletedCourses();
 
     @Modifying
-    @Query(value = "DELETE FROM course c WHERE c.course_id = :courseId", nativeQuery = true)
-    void deletePermanently(@Param("courseId")int courseId);
+    @Query(value = "DELETE FROM Course c WHERE c.course_id = :courseId", nativeQuery = true)
+    void deletePermanently(@Param("courseId")Integer courseId);
 
     @Query("SELECT c.courseId AS courseId, " +
             "c.courseName AS courseName, " +
@@ -69,5 +70,19 @@ public interface CourseRepository extends JpaRepository<Course, Integer>,
             "LEFT JOIN c.enrollments e " +
             "GROUP BY c.courseId " +
             "HAVING COUNT(e) >= :minEnrollment")
-    List<Course> hasEnrollmentGreaterThan(int minEnrollment);
+    List<Course> hasEnrollmentGreaterThan(@Param("minEnrollment") Integer minEnrollment);
+
+    // MATERIALIZED VIEW - FAST
+    @Query("""
+            SELECT new com.feedbacks.FeedbackSystem.DTO.analytics.CourseRankingDTO(
+            c.courseId,
+            c.courseName,
+            c.avgRating,
+            c.feedbackCount
+            )
+            FROM Course c 
+            GROUP BY c.courseId
+            ORDER BY c.avgRating DESC
+            """)
+    List<CourseRankingDTO> getCourseRaking(Pageable pageable);
 }

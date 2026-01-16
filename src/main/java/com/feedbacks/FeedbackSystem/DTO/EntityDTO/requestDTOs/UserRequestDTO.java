@@ -4,10 +4,7 @@ import com.feedbacks.FeedbackSystem.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
@@ -18,16 +15,10 @@ public class UserRequestDTO {
     private String username;
 
     @Column(unique = true)
-    @NotBlank(message = "RollNo is required")
-    @Size(min = 6, max = 10, message = "RollNo must be 6-10 characters")
-    @Pattern(regexp = "^[123]\\d[A-Za-z]{2}\\d{2,3}$")
-    private String rollNo;
-
-    @Column(unique = true)
-    @NotBlank(message = "Admin id is required")
-    @Size(min = 4, max = 20)
-    @Pattern(regexp = "^[0-9]{4}admin[0-9]{2}$")
-    private String adminId;
+    @NotBlank(message = "Identity no is required (RollNo or AdminId)")
+    @Size(min = 6, max = 15, message = "Identity no must be 6-10 characters")
+    @Pattern(regexp = "^([123]\\d[A-Za-z]{2}\\d{2,3})|([0-9]{4}admin[0-9]{2,3})$")
+    private String identityNo;
 
     @Column(nullable = false, unique = true)
     @Email(message = "Invalid email format")
@@ -40,6 +31,6 @@ public class UserRequestDTO {
     @Enumerated(EnumType.STRING)
     // enum value but given as string
     //ex: in postman we give role as "role": "STUDENT" -> as string
-    @NotBlank(message = "Role must be either ADMIN or STUDENT")
+    @NotNull(message = "Role must be either ADMIN or STUDENT")
     private User.Role role;
 }

@@ -32,12 +32,12 @@ public class ExportReportsController {
         return "Pdf generated in: " + filePath;
     }
 
-    @GetMapping("/excel/user")
+    @GetMapping("/user/excel")
     public ResponseEntity<String> excelExportStudents() throws IOException {
         return ResponseEntity.ok().body("Excel sheet exported at "+ excelExportService.exportStudentsDetailsToExcel());
     }
 
-    @GetMapping("/excel/user/download")
+    @GetMapping("/user/excel/download")
     public ResponseEntity<Resource> downloadStudentsExcelSheet() throws IOException {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename:students.xlsx")
@@ -45,7 +45,7 @@ public class ExportReportsController {
                 .body(excelExportService.downloadStudentsExcelSheet());
     }
 
-    @GetMapping("/excel/course")
+    @GetMapping("/course/excel")
     public ResponseEntity<String> excelExportCourses() throws IOException {
         return ResponseEntity.ok().body("Excel sheet exported at "+ excelExportService.exportCourseDetailsToExcel());
     }

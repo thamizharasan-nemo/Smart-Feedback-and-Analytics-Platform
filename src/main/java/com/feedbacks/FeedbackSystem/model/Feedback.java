@@ -1,53 +1,72 @@
 package com.feedbacks.FeedbackSystem.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
 @RequiredArgsConstructor
-
+@Table(
+        indexes = {
+                @Index(name = "idx_feedback_course",
+                        columnList = "course_id"),
+                @Index(name = "idx_feedback_instructor",
+                        columnList = "instructor_id"
+                ),
+                @Index(name = "idx_feedback_submitted_at",
+                        columnList = "submitted_at"
+                )
+        }
+)
+@SQLDelete(sql = "UPDATE feedback SET is_deleted = true WHERE feedback_id = ?")
+@FilterDef(name = "deletedFeedbackFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedFeedbackFilter", condition = "is_deleted = false")
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int feedbackId;
 
-    @NotNull(message = "Rating is required")
-    @Min(value = 1)
-    @Max(value = 5)
     private int courseRating;
 
-    @NotNull(message = "Rating is required")
-    @Min(value = 1)
-    @Max(value = 5)
     private int instructorRating;
 
+    @Column(length = 1000)
     private String courseComment;
+    @Column(length = 1000)
     private String instructorComment;
 
     private boolean anonymous;
 
-    @ManyToOne
+    private LocalDateTime deletedAt;
+    private String deletedBy;
+
+    private String restoredBy;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id")
     private User student;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
+
+    @Column(nullable = false)
     private LocalDate submittedAt;
 
-    @PrePersist
-    // PrePersist used for methods in entity class. For to execute this method before -
-    // - the entity inserted in the database.
-    // ex: Date should be generated before storing the entity data in the database
-    public void setSubmissionDate(){
-        this.submittedAt = LocalDate.now();
-    }
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }

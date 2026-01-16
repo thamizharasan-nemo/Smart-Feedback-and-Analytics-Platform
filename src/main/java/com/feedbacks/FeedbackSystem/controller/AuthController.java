@@ -10,11 +10,10 @@ import com.feedbacks.FeedbackSystem.model.User;
 import com.feedbacks.FeedbackSystem.repository.UserRepository;
 import com.feedbacks.FeedbackSystem.security.CustomUserDetailsService;
 import com.feedbacks.FeedbackSystem.security.JwtUtils;
-import com.feedbacks.FeedbackSystem.service.RefreshTokenService;
-import com.feedbacks.FeedbackSystem.service.UserService;
+import com.feedbacks.FeedbackSystem.service.serviceImple.RefreshTokenServiceImpl;
+import com.feedbacks.FeedbackSystem.service.serviceImple.UserServiceImpl;
 import com.feedbacks.FeedbackSystem.service.other_services.HtmlEmailBody;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,15 +25,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final UserRepository userRepo;
     private final JwtUtils jwtUtils;
     private final CustomUserDetailsService userDetailsService;
     private final AuthenticationManager authenticationManager;
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenServiceImpl refreshTokenService;
     private final HtmlEmailBody emailBody;
 
-    public AuthController(UserService userService, UserRepository userRepo, JwtUtils jwtUtils, CustomUserDetailsService userDetailsService, AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, HtmlEmailBody emailBody) {
+    public AuthController(UserServiceImpl userService, UserRepository userRepo, JwtUtils jwtUtils, CustomUserDetailsService userDetailsService, AuthenticationManager authenticationManager, RefreshTokenServiceImpl refreshTokenService, HtmlEmailBody emailBody) {
         this.userService = userService;
         this.userRepo = userRepo;
         this.jwtUtils = jwtUtils;
@@ -48,7 +47,7 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequestDTO user){
     UserResponseDTO savedUser = userService.addUser(user);
     emailBody.registrationEmail(savedUser);
-    // because of Async in that method savedUser returned before the mail sent
+    // because of Async in this method, savedUser returned before the mail sent
          return ResponseEntity.ok(savedUser);
     }
 

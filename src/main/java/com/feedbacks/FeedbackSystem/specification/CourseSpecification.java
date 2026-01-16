@@ -1,6 +1,7 @@
 package com.feedbacks.FeedbackSystem.specification;
 
 import com.feedbacks.FeedbackSystem.model.Course;
+import com.feedbacks.FeedbackSystem.model.Enrollment;
 import com.feedbacks.FeedbackSystem.model.Feedback;
 import com.feedbacks.FeedbackSystem.model.Instructor;
 import jakarta.persistence.criteria.Root;
@@ -16,19 +17,23 @@ public class CourseSpecification {
 
     public static Specification<Course> hasInstructorId(Integer instructorId){
         return ((root, query, criteriaBuilder) ->
-                instructorId == null ? null : criteriaBuilder.equal(root.get("instructor").get("instructorId"), instructorId));
+                instructorId == null
+                        ? null
+                        : criteriaBuilder.equal(root.get("instructor").get("instructorId"), instructorId));
     }
 
     public static Specification<Course> hasCourseName(String courseName) {
         return ((root, query, criteriaBuilder) ->
                 courseName == null || courseName.isEmpty() ? null
-                        : criteriaBuilder.like(criteriaBuilder.lower(root.get("courseName")), "%"+courseName.toLowerCase()+"%"));
+                        : criteriaBuilder
+                        .like(criteriaBuilder.lower(root.get("courseName")), "%"+courseName.toLowerCase()+"%"));
     }
 
     public static Specification<Course> hasInstructorName(String instructorName) {
         return ((root, query, criteriaBuilder) ->
                 instructorName == null || instructorName.isEmpty() ? null
-                        : criteriaBuilder.like(criteriaBuilder.lower(root.join("instructor").get("instructorName")), "%"+instructorName.toLowerCase()+"%"));
+                        : criteriaBuilder
+                        .like(criteriaBuilder.lower(root.join("instructor").get("instructorName")), "%"+instructorName.toLowerCase()+"%"));
     }
 
     public static Specification<Course> coursesWithoutFeedback(){
@@ -53,7 +58,7 @@ public class CourseSpecification {
         };
     }
 
-    public static Specification<Course> greaterThanAvgRatingCourses(){
+    public static Specification<Course> greaterThanAvgRatingCourses(Double avgRating){
         return (root, query, criteriaBuilder) -> {
             assert query != null;
             Subquery<Double> subquery = query.subquery(Double.class);
@@ -61,7 +66,20 @@ public class CourseSpecification {
             subquery.select(criteriaBuilder.avg(feedbackRoot.get("courseRating")))
                     .where(criteriaBuilder.equal(feedbackRoot.get("course"), root));
 
-            return criteriaBuilder.greaterThanOrEqualTo(subquery, 2.5);
+            return criteriaBuilder.greaterThanOrEqualTo(subquery, avgRating);
+        };
+    }
+
+    public static Specification<Course> popularCourse(Boolean popular){
+        return (root, query, criteriaBuilder) -> {
+            assert query != null;
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<Enrollment> enrollmentRoot = subquery.from(Enrollment.class);
+            subquery.select(criteriaBuilder.count(enrollmentRoot));
+            subquery.where(
+                    criteriaBuilder.equal(enrollmentRoot.get("course"), root)
+            );
+            return criteriaBuilder.greaterThanOrEqualTo(subquery, 50L);
         };
     }
 }

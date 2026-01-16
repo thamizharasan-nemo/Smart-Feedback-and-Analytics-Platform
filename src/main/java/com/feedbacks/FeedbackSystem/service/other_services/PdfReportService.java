@@ -2,13 +2,12 @@ package com.feedbacks.FeedbackSystem.service.other_services;
 
 import com.feedbacks.FeedbackSystem.DTO.EntityDTO.responseDTOs.UserResponseDTO;
 import com.feedbacks.FeedbackSystem.model.User;
-import com.feedbacks.FeedbackSystem.service.UserService;
+import com.feedbacks.FeedbackSystem.service.serviceImple.UserServiceImpl;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -20,13 +19,13 @@ import java.util.List;
 @Service
 public class PdfReportService {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     private final Font titleFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD);
     private final Font subTitleFont = new Font(Font.FontFamily.HELVETICA, 14, Font.NORMAL, BaseColor.DARK_GRAY);
     private final Font normalFont = new Font(Font.FontFamily.HELVETICA, 12);
 
-    public PdfReportService(UserService userService) {
+    public PdfReportService(UserServiceImpl userService) {
         this.userService = userService;
     }
 

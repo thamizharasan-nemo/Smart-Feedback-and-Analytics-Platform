@@ -1,3 +1,37 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+
+#Maven
+!.mvn/wrapper/maven-wrapper.jar
+
+/build/
+
+#IDEs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+#OS_Files
+
+.DS.Store
+Thumbs.db
+
+#Logs
+*.Logs
+
+# Environments & Secret
+.env
+.env.*
+application-prod.properties
+application-local.properties
+
+#Docker
+docker-compose.override.yml
+
+#Test reports
+
+/surefire-reports/
+/failsafe-reports/

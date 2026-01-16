@@ -20,4 +20,7 @@ public class FeedbackResponseDTO {
     private String instructorName;
     private LocalDate submittedAt;
     private String instructorComment;
+    private String deletedAt;
+    private String deletedBy;
+    private String restoredBy;
 }

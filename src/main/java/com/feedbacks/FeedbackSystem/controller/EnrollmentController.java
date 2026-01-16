@@ -1,10 +1,10 @@
 package com.feedbacks.FeedbackSystem.controller;
 
+import com.feedbacks.FeedbackSystem.DTO.ApiResponse;
 import com.feedbacks.FeedbackSystem.DTO.EntityDTO.requestDTOs.EnrollmentRequestDTO;
 import com.feedbacks.FeedbackSystem.DTO.EntityDTO.responseDTOs.EnrollmentResponseDTO;
 import com.feedbacks.FeedbackSystem.model.Enrollment;
-import com.feedbacks.FeedbackSystem.service.EnrollmentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.feedbacks.FeedbackSystem.service.serviceImple.EnrollmentServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +13,12 @@ import java.util.List;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
-@RequestMapping("/enrollments")
+@RequestMapping("/api/v1/enrollments")
 public class EnrollmentController {
 
-    private final EnrollmentService enrollmentService;
+    private final EnrollmentServiceImpl enrollmentService;
 
-    public EnrollmentController(EnrollmentService enrollmentService) {
+    public EnrollmentController(EnrollmentServiceImpl enrollmentService) {
         this.enrollmentService = enrollmentService;
     }
 
@@ -30,46 +30,75 @@ public class EnrollmentController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/id/{enrollmentId}")
-    public ResponseEntity<Enrollment> getEnrollmentById(@PathVariable int enrollmentId){
+    public ResponseEntity<Enrollment> getEnrollmentById(@PathVariable Integer enrollmentId){
         return ResponseEntity.ok(enrollmentService.getEnrollmentById(enrollmentId));
+    }
+
+    @GetMapping("/{enrollmentId}")
+    public ResponseEntity<ApiResponse<EnrollmentResponseDTO>> getEnrollmentResponseById(@PathVariable Integer enrollmentId){
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        "Enrollment data retrieved",
+                        enrollmentService.getEnrollmentResponseById(enrollmentId)
+                )
+        );
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<EnrollmentResponseDTO>> getEnrollmentByStudentId(@PathVariable int studentId){
-        return ResponseEntity.ok(enrollmentService.getAllEnrollmentsByStudentId(studentId));
+    public ResponseEntity<ApiResponse<List<EnrollmentResponseDTO>>> getEnrollmentByStudentId(@PathVariable Integer studentId){
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        "Whole enrollment list",
+                        enrollmentService.getAllEnrollmentsByStudentId(studentId)
+                )
+        );
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    @GetMapping("/student/rollNo/{rollNo}")
-    public ResponseEntity<List<EnrollmentResponseDTO>> getEnrollmentByRollNo(@PathVariable String rollNo){
-        return ResponseEntity.ok(enrollmentService.getAllEnrollmentsByRollNo(rollNo));
+    @GetMapping("/student")
+    public ResponseEntity<ApiResponse<List<EnrollmentResponseDTO>>> getEnrollmentByRollNo(@RequestParam String rollNo){
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        "Whole enrollment list",
+                        enrollmentService.getAllEnrollmentsByRollNo(rollNo)
+                )
+        );
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    @PostMapping("/enroll")
-    public ResponseEntity<?> enrollToCourse(@RequestBody EnrollmentRequestDTO requestDTO){
+    @PostMapping
+    public ResponseEntity<EnrollmentResponseDTO> enrollToCourse(@RequestBody EnrollmentRequestDTO requestDTO){
         return ResponseEntity.ok(enrollmentService.enrollToCourse(requestDTO));
     }
 
-    @DeleteMapping("/unroll")
-    public ResponseEntity<?> unrollToCourse(@RequestBody EnrollmentRequestDTO requestDTO){
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<String>> unrollToCourse(@RequestBody EnrollmentRequestDTO requestDTO){
         enrollmentService.unrollToCourse(requestDTO);
-        return ResponseEntity.ok("Student unrolled successfully");
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,
+                        "unrolled successfully",
+                        "Student unrolled successfully"
+                )
+        );
     }
 
-    @GetMapping("/enrollments/student/course")
-    public ResponseEntity<EnrollmentResponseDTO> findEnrollmentByIds(@RequestBody EnrollmentRequestDTO requestDTO){
-        return ResponseEntity.ok(enrollmentService.findEnrollmentByStudentIdAndCourseId(requestDTO));
+    @GetMapping("/studentId/courseId")
+    public ResponseEntity<ApiResponse<EnrollmentResponseDTO>> findEnrollmentByIds(@RequestBody EnrollmentRequestDTO requestDTO){
+        return ResponseEntity.ok(new ApiResponse<>(
+                true,
+                "Enrollment for student with course",
+                enrollmentService.findEnrollmentByStudentIdAndCourseId(requestDTO))
+        );
     }
 
-    @GetMapping("/count/course-enrollment/{courseId}")
-    public ResponseEntity<?> getCourseEnrollmentCount(@PathVariable int courseId){
+    @GetMapping("/course/{courseId}/count")
+    public ResponseEntity<String> getCourseEnrollmentCount(@PathVariable Integer courseId){
         return ResponseEntity.ok("Total enrollments: "+enrollmentService.getCourseEnrollmentCount(courseId));
     }
 
-    @GetMapping("/count/student-enrollment/{studentId}")
-    public ResponseEntity<?> getStudentEnrollmentCount(@PathVariable int studentId){
+    @GetMapping("/student/{studentId}/count")
+    public ResponseEntity<String> getStudentEnrollmentCount(@PathVariable Integer studentId){
         return ResponseEntity.ok("Total enrollments: "+enrollmentService.getStudentEnrollmentCount(studentId));
     }
 

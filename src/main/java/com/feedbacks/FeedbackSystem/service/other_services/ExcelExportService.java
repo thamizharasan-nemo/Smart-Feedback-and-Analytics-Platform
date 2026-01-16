@@ -3,13 +3,12 @@ package com.feedbacks.FeedbackSystem.service.other_services;
 import com.feedbacks.FeedbackSystem.DTO.EntityDTO.responseDTOs.UserResponseDTO;
 import com.feedbacks.FeedbackSystem.model.Course;
 import com.feedbacks.FeedbackSystem.model.User;
-import com.feedbacks.FeedbackSystem.service.CourseService;
-import com.feedbacks.FeedbackSystem.service.UserService;
+import com.feedbacks.FeedbackSystem.service.serviceImple.CourseServiceImpl;
+import com.feedbacks.FeedbackSystem.service.serviceImple.UserServiceImpl;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -25,10 +24,10 @@ import java.util.List;
 @Service
 public class ExcelExportService {
 
-    private final UserService userService;
-    private final CourseService courseService;
+    private final UserServiceImpl userService;
+    private final CourseServiceImpl courseService;
 
-    public ExcelExportService(UserService userService, CourseService courseService) {
+    public ExcelExportService(UserServiceImpl userService, CourseServiceImpl courseService) {
         this.userService = userService;
         this.courseService = courseService;
     }

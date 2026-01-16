@@ -1,8 +1,8 @@
 package com.feedbacks.FeedbackSystem.service.other_services;
 
+import com.feedbacks.FeedbackSystem.Exception.MailSendingFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,7 +21,6 @@ public class EmailService {
     }
 
     @Async
-    // Async helps methods run asynchronously
     public void simpleMailSender(String to, String subject, String htmlBody){
         try {
             Thread.sleep(5000);
@@ -29,17 +28,17 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true); // to do multipart mail (img, aud, vid)
 
             // getting file which is to be attached, using url path
-            String url = System.getProperty("user.dir") + "\\sukuna.jpeg";
-            FileSystemResource file = new FileSystemResource(new File(url));
+//            String url = System.getProperty("user.dir") + "\\sukuna.jpeg";
+//            FileSystemResource file = new FileSystemResource(new File(url));
 
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlBody, true);  // the true tells that "this is HTML file or code". if not it takes the plain string as normal
-            helper.addAttachment(file.getFilename(), file); // file(img, aud, vid) is attached in the mail
+//            helper.addAttachment(file.getFilename(), file); // file(img, aud, vid) is attached in the mail
             mailSender.send(message);
 
         } catch (MessagingException | InterruptedException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new MailSendingFailedException(e.getMessage());
         }
     }
 
@@ -59,7 +58,7 @@ public class EmailService {
 
             mailSender.send(mimeMessage);
         } catch (MessagingException | InterruptedException e){
-            throw new RuntimeException(e.getMessage());
+            throw new MailSendingFailedException(e.getMessage());
         }
     }
 }

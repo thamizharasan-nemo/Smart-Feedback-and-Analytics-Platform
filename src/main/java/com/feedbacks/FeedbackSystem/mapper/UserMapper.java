@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class UserMapper {
 
@@ -21,14 +23,8 @@ public class UserMapper {
         user.setEmail(userRequestDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
         user.setRole(userRequestDTO.getRole());
-
-        if(userRequestDTO.getRole().equals(User.Role.ADMIN)){
-            user.setIdentityNo(userRequestDTO.getAdminId());
-        }
-        if(userRequestDTO.getRole().equals(User.Role.STUDENT)) {
-            user.setIdentityNo(userRequestDTO.getRollNo());
-        }
-
+        user.setIdentityNo(userRequestDTO.getIdentityNo());
+        user.setUserCreatedAt(LocalDate.now());
         return user;
     }
 
@@ -38,6 +34,7 @@ public class UserMapper {
                 user.getUsername(),
                 user.getEmail(),
                 user.getIdentityNo(),
+                user.getRole().toString(),
                 String.valueOf(user.getUserCreatedAt())
         );
     }

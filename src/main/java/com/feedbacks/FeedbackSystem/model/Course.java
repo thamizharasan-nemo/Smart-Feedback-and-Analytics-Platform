@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +18,8 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 // @SqlDelete Soft Delete the record instead of physically deleting it
 @SQLDelete(sql = "UPDATE course SET is_deleted = true WHERE course_id = ?")
-@SQLRestriction("is_deleted = false")   // @SQLRestriction replacement of @Where clause act as global filter for all queries. sol: use native query
+@FilterDef(name = "deletedCourseFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedCourseFilter", condition = "is_deleted = false")
 public class Course {
 
     @Id
@@ -29,7 +30,8 @@ public class Course {
 
     private String courseDescription;
 
-    private boolean isDeleted = false;
+    private Double avgRating;
+    private Long feedbackCount;
 
     @CreatedBy
     private String createdBy;
@@ -37,11 +39,12 @@ public class Course {
     @LastModifiedBy
     private String modifiedBy;
 
+    private LocalDateTime deletedAt;
     private String deletedBy;
 
     private String restoredBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id") // join column of instructor_id with course table
     //owning side of the courses list
     @JsonBackReference
@@ -55,4 +58,6 @@ public class Course {
     @JsonIgnore
     private List<Enrollment> enrollments = new ArrayList<>();
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }

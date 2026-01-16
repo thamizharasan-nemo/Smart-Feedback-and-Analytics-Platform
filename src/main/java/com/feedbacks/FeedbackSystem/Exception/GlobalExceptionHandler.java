@@ -1,9 +1,12 @@
 package com.feedbacks.FeedbackSystem.Exception;
 
+import com.feedbacks.FeedbackSystem.DTO.ApiResponse;
+import com.feedbacks.FeedbackSystem.DTO.analytics.RateLimitInfo;
 import com.feedbacks.FeedbackSystem.Exception.dto.ExceptionResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +18,7 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -29,43 +33,110 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> entityNotFoundException(EntityNotFoundException e,
-                                                     HttpServletRequest request){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                Map.of(
-                        "message: ", e.getMessage(),
-                        "timestamp: ", LocalDate.now(),
-                        "status: ", 404,
-                        "error: ", "Not Found",
-                        "path: ", request.getRequestURI()
-                )
-        );
-    }
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e,
-                                                             HttpServletRequest request){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+    public ResponseEntity<ApiResponse<?>> entityNotFoundException(EntityNotFoundException e,
+                                                                HttpServletRequest request){
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.isError(),
+                e.getLocalizedMessage(),
                 new ExceptionResponseDTO(
                         request.getRequestURI(),
                         HttpStatus.NOT_FOUND.value(),
                         e.getMessage(),
-                        "Resource not found!",
+                        "Not found!",
                         Instant.now()
                 )
-        );
+        ));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleResourceNotFoundException(ResourceNotFoundException e,
+                                                             HttpServletRequest request){
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.isError(),
+                e.getLocalizedMessage(),
+                new ExceptionResponseDTO(
+                        request.getRequestURI(),
+                        HttpStatus.NOT_FOUND.value(),
+                        e.getMessage(),
+                        "Not found!",
+                        Instant.now()
+                )
+        ));
+    }
+
+    @ExceptionHandler(NotAllowedException.class)
+    public ResponseEntity<ApiResponse<?>> handleNotAllowedException(NotAllowedException e,
+                                                                          HttpServletRequest request){
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.isError(),
+                e.getLocalizedMessage(),
+                new ExceptionResponseDTO(
+                        request.getRequestURI(),
+                        429,
+                        e.getMessage(),
+                        "Not allowed to do this action",
+                        Instant.now()
+                )
+        ));
+    }
+
+    private HttpHeaders buildRateLimitHeaders(RateLimitInfo info) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-RateLimit-Limit", String.valueOf(info.limit()));
+        headers.add("X-RateLimit-Remaining", String.valueOf(info.remaining()));
+        headers.add("X-RateLimit-Reset", info.resetAt());
+
+        return headers;
+    }
+
+    @ExceptionHandler(TooManyRequestException.class)
+    public ResponseEntity<ApiResponse<?>> handleTooManyRequestException(TooManyRequestException e,
+                                                                        HttpServletRequest request) {
+        RateLimitInfo limitInfo = e.getRateLimitInfo();
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .headers(buildRateLimitHeaders(limitInfo))
+                .body(new ApiResponse<>(
+                        HttpStatus.OK.isError(),
+                        e.getLocalizedMessage(),
+                        new ExceptionResponseDTO(
+                                request.getRequestURI(),
+                                429,
+                                e.getMessage(),
+                                "Too many requests reached",
+                                Instant.now()
+                        )
+        ));
+    }
+
+    @ExceptionHandler(MailSendingFailedException.class)
+    public ResponseEntity<ApiResponse<?>> handleMailSendingFailedException(MailSendingFailedException e,
+                                                                    HttpServletRequest request){
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.isError(),
+                e.getLocalizedMessage(),
+                new ExceptionResponseDTO(
+                        request.getRequestURI(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        e.getMessage(),
+                        "Mail sending failed",
+                        Instant.now()
+                )
+        ));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception ex, HttpServletRequest request){
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.isError(),
+                ex.getLocalizedMessage(),
                 new ExceptionResponseDTO(
                         request.getRequestURI(),
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         ex.getMessage(),
                         "INTERNAL_SERVER_ERROR",
                         Instant.now()
-                        )
-        );
+                )
+        ));
     }
 }

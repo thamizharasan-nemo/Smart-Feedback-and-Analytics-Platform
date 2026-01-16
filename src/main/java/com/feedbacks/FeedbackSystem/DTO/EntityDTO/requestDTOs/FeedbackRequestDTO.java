@@ -2,6 +2,7 @@ package com.feedbacks.FeedbackSystem.DTO.EntityDTO.requestDTOs;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -24,8 +25,10 @@ public class FeedbackRequestDTO {
 
     private boolean anonymous;
 
-    @NotNull(message = "Student_Id is required")
-    private int studentId;
-    @NotNull(message = "Course_Id is required")
-    private int courseId;
+    @NotNull(message = "Student_id is required")
+    private Integer studentId;
+    @NotNull(message = "Course_id is required")
+    private Integer courseId;
+    @NotNull(message = "instructor_id is required")
+    private Integer instructorId;
 }

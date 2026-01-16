@@ -4,6 +4,7 @@ import com.feedbacks.FeedbackSystem.model.Course;
 import com.feedbacks.FeedbackSystem.model.Enrollment;
 import com.feedbacks.FeedbackSystem.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -45,4 +46,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
 
     @Query("SELECT COUNT(e) FROM Enrollment e WHERE e.student.userId = :userId")
     Integer countStudentTotalEnrollments(@Param("userId") int userId);
+
 }

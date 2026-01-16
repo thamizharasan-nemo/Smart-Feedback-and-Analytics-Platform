@@ -4,25 +4,24 @@ import com.feedbacks.FeedbackSystem.DTO.EntityDTO.requestDTOs.CourseRequestDTO;
 import com.feedbacks.FeedbackSystem.DTO.EntityDTO.responseDTOs.CourseResponseDTO;
 import com.feedbacks.FeedbackSystem.model.Course;
 import com.feedbacks.FeedbackSystem.model.Instructor;
-import com.feedbacks.FeedbackSystem.service.InstructorService;
+import com.feedbacks.FeedbackSystem.service.serviceImple.InstructorServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CourseMapper {
 
-    private final InstructorService instructorService;
+    private final InstructorServiceImpl instructorService;
 
-    public CourseMapper(InstructorService instructorService) {
+    public CourseMapper(InstructorServiceImpl instructorService) {
         this.instructorService = instructorService;
     }
 
-    public Course toEntity(@Valid CourseRequestDTO requestDTO){
+    public Course toEntity(@Valid CourseRequestDTO requestDTO, Instructor instructor){
         Course course = new Course();
         course.setCourseName(requestDTO.getCourseName());
         course.setCourseDescription(requestDTO.getCourseDescription());
 
-        Instructor instructor = instructorService.getInstructorById(requestDTO.getInstructorId());
         course.setInstructor(instructor);
 
         return course;
@@ -43,7 +42,10 @@ public class CourseMapper {
                 course.getCourseId(),
                 course.getCourseName(),
                 course.getCourseDescription(),
-                instructorName
+                instructorName,
+                course.getDeletedAt() != null ? course.getDeletedAt().toString() : "Not yet deleted",
+                course.getDeletedBy(),
+                course.getRestoredBy()
         );
     }
 

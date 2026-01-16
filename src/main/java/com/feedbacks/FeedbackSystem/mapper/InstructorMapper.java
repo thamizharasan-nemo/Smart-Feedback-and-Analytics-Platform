@@ -26,9 +26,17 @@ public class InstructorMapper {
                                 course.getCourseId(),
                                 course.getCourseName(),
                                 course.getCourseDescription(),
-                                course.getInstructor().getInstructorName())
+                                course.getInstructor().getInstructorName(),
+                                course.getDeletedAt() != null ? course.getDeletedAt().toString() : "Not yet deleted",
+                                course.getDeletedBy(),
+                                course.getRestoredBy())
                         ).toList()
         );
+        responseDTO.setAvgRating(instructor.getAvgRating());
+        responseDTO.setFeedbackCount(instructor.getFeedbackCount());
+        responseDTO.setDeletedAt(instructor.getDeletedAt() != null ? instructor.getDeletedAt().toString() : "not yet deleted");
+        responseDTO.setDeletedBy(instructor.getDeletedBy() != null ? instructor.getDeletedBy() : "No one");
+        responseDTO.setRestoredBy(instructor.getRestoredBy() != null ? instructor.getRestoredBy() : "No one");
         return responseDTO;
     }
 }

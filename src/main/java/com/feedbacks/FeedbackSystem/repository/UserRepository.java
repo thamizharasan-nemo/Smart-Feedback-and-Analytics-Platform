@@ -16,10 +16,10 @@ public interface UserRepository extends JpaRepository<User, Integer>,
     Optional<User> findByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.identityNo = :identityNo")
-    Optional<User> findByRollNo(String identityNo);
+    Optional<User> findByIdentityNo(String identityNo);
 
     // <> exclude the userId that passed, checks email with remaining users while updating
-    boolean existsByEmailAndUserIdNot(String email, int userId);
+    boolean existsByEmailAndUserIdNot(String email, Integer userId);
 
     @Query("SELECT u FROM User u WHERE u.role = :role")
     List<User> findByRole(@Param("role") User.Role role);

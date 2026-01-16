@@ -1,7 +1,6 @@
 package com.feedbacks.FeedbackSystem.service.other_services;
 
-import com.feedbacks.FeedbackSystem.service.RefreshTokenService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.feedbacks.FeedbackSystem.service.serviceImple.RefreshTokenServiceImpl;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +9,10 @@ import java.io.IOException;
 @Service
 public class SchedulerService {
 
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenServiceImpl refreshTokenService;
     private final ExcelExportService excelExportService;
 
-    public SchedulerService(RefreshTokenService refreshTokenService, ExcelExportService excelExportService) {
+    public SchedulerService(RefreshTokenServiceImpl refreshTokenService, ExcelExportService excelExportService) {
         this.refreshTokenService = refreshTokenService;
         this.excelExportService = excelExportService;
     }

@@ -52,9 +52,9 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/swagger-ui.html",
                                 "/webjars/**").permitAll()
-                        .requestMatchers("/courses/**").authenticated()
-                        .requestMatchers("/users/**","/enrollments/**").authenticated()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/courses/**").permitAll()
+                        .requestMatchers("/users/**","/enrollments/**").permitAll()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.httpBasic(httpBasic ->{});

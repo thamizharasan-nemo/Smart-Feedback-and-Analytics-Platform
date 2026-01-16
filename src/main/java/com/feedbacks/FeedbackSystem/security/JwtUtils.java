@@ -31,7 +31,11 @@ public class JwtUtils {
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, claims -> claims.getSubject());
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractRole(String token){
+        return extractClaim(token, claims -> claims.get("role").toString());
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -64,17 +68,13 @@ public class JwtUtils {
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + (long) expirationSeconds * 1000))
                 // signWith() method initiate signing process - Forms the third(final) part of the key - Verify token integrity and authenticity
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .signWith(getSignInKey())
                 .compact();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        try {
-            String extractedUsername = extractUsername(token);
-            return (extractedUsername.equals(userDetails.getUsername()) && !isTokenExpired(token));
-        } catch (JwtException je) {
-            return false;
-        }
+        String extractedUsername = extractUsername(token);
+        return (extractedUsername.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public boolean isTokenExpired(String token) {

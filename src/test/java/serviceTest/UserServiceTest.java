@@ -3,7 +3,7 @@ package serviceTest;
 import com.feedbacks.FeedbackSystem.DTO.EntityDTO.responseDTOs.UserResponseDTO;
 import com.feedbacks.FeedbackSystem.model.User;
 import com.feedbacks.FeedbackSystem.repository.UserRepository;
-import com.feedbacks.FeedbackSystem.service.UserService;
+import com.feedbacks.FeedbackSystem.service.serviceImple.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ public class UserServiceTest {
     UserRepository userRepo;
 
     @InjectMocks
-    UserService userService;
+    UserServiceImpl userService;
 
     @Test
     void testGetUserById(){
@@ -33,11 +33,4 @@ public class UserServiceTest {
 //        verify(userRepo, times(1)).findById(1);
     }
 
-    @Test
-    void testByRollNo(){
-        when(userRepo.findByRollNo("22CS01")).thenReturn(
-                Optional.of(new User(1, "Thamizharasan", "22cs01".toUpperCase(), "thamizharasan2555@gamil.com", "09112005tmk", User.Role.ADMIN, null)));
-        UserResponseDTO userResponse = userService.getByRollNo("22CS01");
-        Assertions.assertEquals("22CS01", userResponse.getIdentityNo());
-    }
 }

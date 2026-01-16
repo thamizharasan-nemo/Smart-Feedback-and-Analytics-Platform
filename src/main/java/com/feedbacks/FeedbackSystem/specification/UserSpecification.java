@@ -74,6 +74,20 @@ public class UserSpecification {
         };
     }
 
+    public static Specification<User> studentsWithFeedback() {
+        return (root, query, criteriaBuilder) ->{
+            assert query != null;
+            Subquery<Integer> subquery = query.subquery(Integer.class);
+            Root<Feedback> feedbackRoot = subquery.from(Feedback.class);
+            subquery.select(feedbackRoot.get("student").get("userId"));
+
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get("role"), User.Role.STUDENT),
+                    criteriaBuilder.in(root.get("userId").in(subquery))
+            );
+        };
+    }
+
     public static Specification<User> studentsWithoutEnrollments(){
         return (root, query, criteriaBuilder) -> {
             assert query != null;

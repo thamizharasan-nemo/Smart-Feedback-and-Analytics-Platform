@@ -8,18 +8,18 @@ import com.feedbacks.FeedbackSystem.model.Course;
 import com.feedbacks.FeedbackSystem.model.Enrollment;
 import com.feedbacks.FeedbackSystem.model.User;
 import com.feedbacks.FeedbackSystem.repository.EnrollmentRepository;
-import com.feedbacks.FeedbackSystem.service.CourseService;
-import com.feedbacks.FeedbackSystem.service.UserService;
+import com.feedbacks.FeedbackSystem.service.serviceImple.CourseServiceImpl;
+import com.feedbacks.FeedbackSystem.service.serviceImple.UserServiceImpl;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EnrollmentMapper {
 
-    private final UserService userService;
-    private final CourseService courseService;
+    private final UserServiceImpl userService;
+    private final CourseServiceImpl courseService;
     private final EnrollmentRepository enrollmentRepo;
 
-    public EnrollmentMapper(UserService userService, CourseService courseService, EnrollmentRepository enrollmentRepo) {
+    public EnrollmentMapper(UserServiceImpl userService, CourseServiceImpl courseService, EnrollmentRepository enrollmentRepo) {
         this.userService = userService;
         this.courseService = courseService;
         this.enrollmentRepo = enrollmentRepo;
