@@ -1,37 +1,30 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-
-#Maven
+# Maven
+/target/
 !.mvn/wrapper/maven-wrapper.jar
 
-/build/
-
-#IDEs
+# IDEs
 .idea/
 .vscode/
 *.iml
 *.ipr
 *.iws
 
-#OS_Files
-
-.DS.Store
+# OS files
+.DS_Store
 Thumbs.db
 
-#Logs
-*.Logs
+# Logs
+*.log
 
-# Environments & Secret
+# Environment & secrets
 .env
 .env.*
 application-prod.properties
 application-local.properties
 
-#Docker
+# Docker
 docker-compose.override.yml
 
-#Test reports
-
+# Test reports
 /surefire-reports/
 /failsafe-reports/
