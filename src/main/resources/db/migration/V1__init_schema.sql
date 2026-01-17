@@ -11,7 +11,7 @@ CREATE TABLE `user` (
    PRIMARY KEY (`user_id`),
    UNIQUE KEY `UK5n7u2fry0slhlo865642lxqp1` (`roll_no`),
    UNIQUE KEY `UK6dwb0rs5b9jaxjy5ulsn5aytq` (`identity_no`)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
  CREATE TABLE `course` (
     `course_id` int NOT NULL AUTO_INCREMENT,
@@ -29,7 +29,7 @@ CREATE TABLE `user` (
     PRIMARY KEY (`course_id`),
     KEY `FKqk2yq2yk124dhlsilomy36qr9` (`instructor_id`),
     CONSTRAINT `FKqk2yq2yk124dhlsilomy36qr9` FOREIGN KEY (`instructor_id`) REFERENCES `instructor` (`instructor_id`)
-  ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+  ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
   CREATE TABLE `enrollment` (
      `enroll_id` int NOT NULL AUTO_INCREMENT,
@@ -41,7 +41,7 @@ CREATE TABLE `user` (
      KEY `FKol08mf7ybydnd5iy6o47d8ngs` (`student_user_id`),
      CONSTRAINT `FKol08mf7ybydnd5iy6o47d8ngs` FOREIGN KEY (`student_user_id`) REFERENCES `user` (`user_id`),
      CONSTRAINT `FKsrohxsncebva8ssubg604hh7c` FOREIGN KEY (`course_course_id`) REFERENCES `course` (`course_id`)
-   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
    CREATE TABLE `instructor` (
       `instructor_id` int NOT NULL AUTO_INCREMENT,
@@ -53,7 +53,7 @@ CREATE TABLE `user` (
       `restored_by` varchar(255) DEFAULT NULL,
       `deleted_at` datetime(6) DEFAULT NULL,
       PRIMARY KEY (`instructor_id`)
-    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `feedback` (
@@ -82,7 +82,7 @@ CREATE TABLE `feedback` (
    CONSTRAINT `FKj74d0lvnfn5cjm4ext74dobr3` FOREIGN KEY (`instructor_id`) REFERENCES `instructor` (`instructor_id`),
    CONSTRAINT `FKko7f08v61t5y67teh5jxxwrea` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`),
    CONSTRAINT `FKwpf206pf27bxt57sgtyn5sqk` FOREIGN KEY (`student_id`) REFERENCES `user` (`user_id`)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
     CREATE TABLE `refresh_tokens` (
        `id` int NOT NULL AUTO_INCREMENT,
@@ -96,4 +96,4 @@ CREATE TABLE `feedback` (
        UNIQUE KEY `UKghpmfn23vmxfu3spu3lfg4r2d` (`token`),
        KEY `IDX7tdcd6ab5wsgoudnvj7xf1b7l` (`user_id`),
        CONSTRAINT `FKjwc9veyjcjfkej6rnnbsijfvh` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-     ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+     ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
