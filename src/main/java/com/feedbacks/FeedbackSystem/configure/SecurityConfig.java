@@ -3,6 +3,8 @@ package com.feedbacks.FeedbackSystem.configure;
 import com.feedbacks.FeedbackSystem.security.CustomUserDetailsService;
 import com.feedbacks.FeedbackSystem.security.JwtAuthenticationEntryPoint;
 import com.feedbacks.FeedbackSystem.security.JwtAuthenticationFilter;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -25,6 +28,11 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    @PostConstruct
+    public void checkEnv() {
+        log.info("Running on Railway: {}", System.getenv("RAILWAY_PROJECT_NAME"));
+    }
 
     public SecurityConfig(CustomUserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint authenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
